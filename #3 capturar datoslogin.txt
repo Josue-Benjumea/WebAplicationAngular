@@ -1,0 +1,106 @@
+CAPTURAR LOS DATOS
+#1 en el front, en la carpeta model crear un archivo nombre.model.ts
+
+ejp product.model.ts
+
+#2 exportar la clase que queramos 
+export class Nombre{
+
+    //atributos y sus tipos ejm
+    id: string
+    name: string
+
+
+    //constructor instaciar o inicializar los atributos
+ constructor(_id = "", name = ""){
+        this._id = _id,
+        this.name = name,
+
+}
+
+#4 en services en nombre.service.ts en este caso product.service.ts
+crear un servicio que me permita crear el producto
+
+#5 importamos el modelo que creamos en el paso 2
+import {Product} from '../models/product.model
+
+creamos la funcion que nos envie el post a la misma ruta de crear que tenemos en el API
+ createProduct(data: Product){
+    return this.http.post(`${this.URL_API}/create-product`, data)
+  }
+
+
+#6 creamos el modelo de formulario en html
+	en cualquiera de las rutas del front, en este caso en el admin
+
+#7 Para capturar los datos ingresados en el formulario importamos en el app.module.ts
+en los imports, importamos FormsModule
+
+#8 en la ruta del front que queramos, en este caso en el admin, en el admin.component.ts
+importamos el Ngform = import {NgForm} from '@angular/forms'
+tambien importamos el modelo de producto que creamos en paso 2 import {Product} from 'src/app/models/product.model'
+
+#9  en el mismo archivo del paso anterior creamos la funcion que nos permita capturar los elementos 
+createProduct(form: NgForm){
+
+    console.log(form.value)//{datos del formulario}
+
+  }
+
+utilizamos la funcion con el evento (click) en el boton que queramos que ejecute la funcion de la captura
+
+
+#10 en el form en el html donde capturaremos los datos, agregamos un #productForm = "ngForm"
+y en el boton agregamos en el evento click (productForm)
+ejmp (click)="this.createProduct(productForm) es decir #nombreForm="ngForm"
+
+#11 ahora tenemos que decirle a cada input a que corresponde de nuestro modelo creado en el
+ paso 2 
+primero en los servicios en el product.services creamos abajo del URL_API
+currentProduct: Product
+
+y dentro del constructor
+constructor(public http: HttpClient) { 
+    this.currentProduct = new Product()
+  }
+
+en los inputs 
+agregamos un nombre(name="") que tiene que ser igual a uno de los valores del modelo creado en el paso 2, luego
+[ngModel]="this.nombredelservicioService.currentProduct.name" (current producto) hace referencia a lo que creamos abajo del URL_API
+
+ejmp
+<input
+          type="text"
+          class="form-control"
+          id="description"
+          placeholder="Descripcion del producto"
+         // name="description"
+         // [ngModel]="this.productService.currentProduct.description" 
+        />
+
+
+
+
+GUARDAR LOS DATOS CREADOS
+en la ruta que hayamos creado todo el guardado de nombre.component.ts, en este caso admin.component.ts
+
+dentro de  la funcion que habiamos creado para crear un producto, validamos que los datos no esten vacios  en este caso createProduct
+
+
+  console.log(form.value)//{datos del formulario}
+
+    let {name, description } = form.value
+
+    if (!name || !description  ) return alert("Diligencie todos lso campos")
+
+    this.productService.createProduct(form.value).subscribe((res) =>
+con esta parte hacemos que la tabla se actualice en la consola cada que creamos un producto{
+      this.getProducts()
+      alert(res)})
+
+  }
+
+
+
+
+

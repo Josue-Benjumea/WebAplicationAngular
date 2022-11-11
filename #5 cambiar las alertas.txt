@@ -1,0 +1,7 @@
+Vamos a la pagina sweetalert2.github.io
+#1
+en una terminar en el front instalamos npm i sweetalert2
+#2
+importamos en la ruta que queramos import Swal from 'sweetalert2'
+#3 utilizar las alertas donde queramos desde la pagina
+

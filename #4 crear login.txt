@@ -1,0 +1,86 @@
+UTILIZAR ICONOS
+En el index.html en el HEAD pegamos  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+PARA ACTUALIZAR Y ELIMINAR
+En cada uno de los input del formulario para crear, agregamos al principio un input
+de clase hidden
+ <input type="hidden" id="_id" name="_id" [ngModel]="this.productService.currentProduct._id">
+el ng model variara en funcion del servicio que estemos trabajando
+esto lo unico que hace es traerme el id del elemento que se le asigno en la db
+
+
+ELIMIAR 
+#1
+en el servicio deseado, creamos una funcion que nos traiga el delete de nuestro api
+ deleteProduct(id:string){
+    return this.http.delete(`${this.URL_API}/delete-product?id=${id}`)
+  }
+}
+
+#2
+en la ruta del front que queramos, en este caso el admin, en el admin.component.ts
+creamos una funcion para eliminar el producto
+deleteProduct(id: string) {
+    let isDeleted = confirm('Esta seguro que desa eliminar este producto'); //aceptar - true  cancelar - false
+
+    if (isDeleted) {
+      this.productService.deleteProduct(id).subscribe((res: any) => {
+        this.getProducts();
+        alert(res.msg ||'error');
+      });
+      return;
+    }
+
+    return;
+  }
+el if nos sirve para validar si el usuario realmente quier eliminar el producto
+#3
+ahora en el html en el boton que queramos utilizar la funcion
+la utilizamos con el evento angular (click) y llamanos a this.la funcion y dentro le pasamos el  
+ <i class="material-icons"  (click)="this.deleteProduct(product._id)">delete_forever</i>
+
+
+
+
+ACTUALIZAR 
+
+#1
+en el servicio deseado, creamos una funcion que nos traiga el delete de nuestro api
+  updateProduct(id: string, data:Product ){
+    return this.http.put(`${this.URL_API}/update-product?id=${id}`,data)
+
+  }
+}
+
+el ?id=
+es porque en el api recivimos un query, por lo que hay que pasar el id que queremos eliminar
+
+
+
+
+#2
+en la ruta del front que queramos, en este caso el admin, en el admin.component.ts
+creamos una funcion para actualizar el producto
+
+#3
+en la ruta del front que queramos, en este caso el admin, en el admin.component.ts
+creamos una funcion para traer la informacion del producto que queremos actualizar al formulario
+fillForm(product: Product){
+    this.productService.currentProduct = product
+  }
+
+#4
+en la ruta que queramos en este caso en el admin, en el component.ts en este caso admin.component.ts
+en la funcion de crear el producto en este caso createProduct(){} 
+agregamos despues del console.log(form.value);
+
+if(form.value._id){
+      this.updateProduct(form.value)
+      return 
+    }
+    delete form.value._id
+lo que nos va hacer es que si el element contiene un id es porque ya esta creado, entonces solo se actualizara
+
+
+
+

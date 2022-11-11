@@ -1,0 +1,86 @@
+CONECTAR BACK Y DB CON FRONT
+
+#1 En el app module.ts importar http
+import{HttpClientModule} from '@angular/common/http'
+y en los imports:[
+HttpClientModule
+]
+
+#2 Crear servicios ng g s carpeta de servicios( es decir services)/nombre del servicios( es decir product)
+
+#3 en los servicios en el product.services.ts (el product es el nombre del servicio)
+importar httpclient
+import {HttpClient} from '@angular/common/http'
+
+en el export class ProductService{
+constructor(public http:HttpClient){}
+}
+
+#4 declarar al principio del export class ProductService
+URL_API = "url de la ruta del backend que queremos " ejemplo="http://localhost:5000/product/get-products"
+el /product es lo que en el backend creamos en el app.js como nombre para poder utilizar las rutas, el enrutador
+el /get-products es una ruta dentro del api en el bakcend en el product.routs.js para hacer uso de la funcion que tenga adentro
+ABAJO DECLARAR nombre del servicio:any ejmp product:any
+#5 crear funcion que nos permita traer las rutas de la base de datos
+getProducts(){
+return this.http.get(`${this.URL_API}/`)
+
+CONSUMIR EL API DB
+#1 En la ruta que queramos en el component. ts ejmp admin.component.ts
+importamos el servicios que acabamos de crear = 
+import {ProductService} from 'src/app/services/product.service'
+//nota la primera siempre mayuscula
+
+#2 en el export class
+Instanciamos el servicio
+  constructor(public productService:ProductService) { }
+#3 creamos una funcion para consumir los datos segun la ruta de las rutas del api/Db =
+ getProducts(){
+    
+    let response = this.productService.getProducts()
+    response.subscribe((res) => {
+      this.productService.products = res
+      console.log(this.productService.products)})
+  }
+
+dentro del ngOnInit
+llamaos la funcion
+ngOnInit(): void {
+    this.getProducts()
+  }
+
+UTILIZAR EN EL DOCUMENTO
+En el html donde lo queramos utilizar
+#1 iteramos cada elemento de la base de datos:
+en el contenedor utilizamos *ngFor="let como queramos llamar a cada elemento of this.nombre del servicio.nombre del atributo que colocamos
+en la carpeta de servicios service.ts abajo del URL_API.data"
+ejmp = *ngFor="let product of this.productService.products.data"
+luego donde queramos plasmar la informacion:
+{{nombre del elemento.lo que quremos del elemento}}
+{{product.name}}
+{{ product.name }}
+{{product.price }}
+{{ product.stock }}
+
+ORDENAR DE MAYOR A MENOR 
+.sort((a:any, b:any) => (a.ELEMEMTO DE LA LISTA > b.ELEMENTO DE LA LISTA)? -1 : 1)
+EJM
+product.sort((a:any, b:any) => (a.price > b.price)? -1 : 1)
+
+
+
+CONDICIONAL TERNANRIO
+(condicion)? si se cumple : si no se cumple
+
+
+
+
+
+
+
+
+
+
+
+
+
