@@ -24,9 +24,19 @@
         </td>
         <td>
           <div class="d-flex justify-content-evenly">
-          <i class="material-icons" (click)="this.deleteProduct(product._id)" style="cursor: pointer;">delete_forever</i>
-          <i class="material-icons text-success" (click)="this.fillForm(product)"style="cursor: pointer;">edit </i>
-        </div>
+            <i
+              class="material-icons"
+              (click)="this.deleteProduct(product._id)"
+              style="cursor: pointer"
+              >delete_forever</i
+            >
+            <i
+              class="material-icons text-success"
+              (click)="this.fillForm(product)"
+              style="cursor: pointer"
+              >edit
+            </i>
+          </div>
         </td>
       </tr>
     </tbody>
@@ -37,7 +47,12 @@
       <h3 class="text-center pb-3">Administrador de productos</h3>
 
       <form #productForm="ngForm">
-        <input type="hidden" id="_id" name="_id" [ngModel]="this.productService.currentProduct._id">
+        <input
+          type="hidden"
+          id="_id"
+          name="_id"
+          [ngModel]="this.productService.currentProduct._id"
+        />
         <div class="mb-3">
           <label for="name" class="form-label">Nombre</label>
           <input
@@ -96,7 +111,7 @@
           />
         </div>
       </form>
-      
+
       <button class="btn btn-dark" (click)="this.createProduct(productForm)">
         <i class="material-icons pe-4">save</i>
         Guardar
@@ -104,4 +119,3 @@
     </div>
   </div>
 </div>
-
