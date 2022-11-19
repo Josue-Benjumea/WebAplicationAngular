@@ -1,0 +1,136 @@
+GUARDAR EL TOKEN EN EL LOCAL STORAGE
+en la funcion de login en el login.component.ts abajo del  ( res:any) => {copiamos 
+localStorage.setItem("token", res.token)
+
+nos quedaria la funcion
+ login() {
+    const user = { email: this.email, password: this.password };
+    this.userService.login(user).subscribe(
+      ( res:any) => {
+        localStorage.setItem("token", res.token)
+        this.userService.setToken(res.token);
+    
+        this.router.navigateByUrl('/home');
+      },
+      (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: error.error,
+          text: 'Something went wrong!',
+        });
+      }
+    );
+  }
+}
+
+REDIRIGIR
+el router nos permite redigir en una funcion por medio del metodo navigateByUrl('/ruta')
+ejmp this.router.navigateByUrl('/home');
+para utilizarlo hay que importarlo import { Router } from '@angular/router';
+y tambien instanciarlo  constructor( public router: Router) {}
+
+PROTEGER VISTAS
+#1
+ crear una carpeta en el app llamada guards
+#2
+generar un guardian en la carpeta guardians con el comando  ng g guard carpeta/nombre
+ejmp  ng g guard guards/user 
+seleccionamos canactivate
+#3
+importamos router y lo instanciamos import { Router } from '@angular/router';
+y lo instanciamos constructor(public router:Router){}
+#4
+borramos el canActivate y generamos un constructor(){}vacio
+debajo creamos una funcion llamada canActivate(){} donde validaremos si el token existe
+canActivate(){
+
+    let token = localStorage.getItem("token") || ""
+
+    if(token){
+      return true
+    }
+
+    this.router.navigate(['/login'])
+    return false
+
+  }
+
+#5
+vamos al app-routing.module.ts
+en el path que queramos proteger agregamos canActivate:[UserGuard]
+quedaria {path: "home", component: HomeComponent, canActivate:[UserGuard]},
+
+
+DECODIFICAR TOKEN
+#1 instalamos npm i jwt-decode
+#2 en el servicio de los token e inicio de sesion en este caso el users.service.ts 
+importamos el jwt decode import jwtDecode from 'jwt-decode';
+#3 creamos una funcion apra decodificar el token
+decodeToken(){
+    let token = localStorage.getItem('token')
+    let decoded = jwtDecode(token || 'Error en token')
+    return decoded
+  }
+#4 lo utilizamos en la funcion de login en el login.component.ts
+  this.userService.decodeToken()
+quedaria
+login() {
+    const user = { email: this.email, password: this.password };
+    this.userService.login(user).subscribe(
+      ( res:any) => {
+        localStorage.setItem("token", res.token)
+        this.userService.setToken(res.token);
+        this.router.navigateByUrl('/home');
+        this.userService.decodeToken()
+      },
+      (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: error.error,
+          text: 'Something went wrong!',
+        });
+      }
+    );
+  }
+}
+
+
+ HACER CIERRE DE SESSION O LOGOUT
+
+#1 EN EL USERS.SERVICE.TS O DONDE TENGAMOS TODAS LAS FUNCIONES DE LOGIN
+REALIZAMOS LA FUNCION DE LOGOUT
+ logOut(){
+    localStorage.removeItem("token")
+    this.router.navigate(['/login'])
+    return
+  }
+
+
+HACER QUE SOLO PUEDA VER UNA PAGINA EL ADMINISTRADOR
+#1 creamos un nuevo guardian esta vez con nombre admin.guard
+#2
+importamos router y lo instanciamos import { Router } from '@angular/router';
+y lo instanciamos constructor(public router:Router){}
+#3
+borramos el canActivate y generamos un constructor(){}vacio
+debajo creamos una funcion
+  canActivate(){
+
+    let token = localStorage.getItem('token') || ""
+
+    if(token){
+      return true
+    }
+    alert("Por favor inicie sesion")
+    this.router.navigate(['/login'])
+    return false
+
+  }
+#4 utilizamos en el app-routin.module
+en este caso en el path de admin {path: "admin", component: AdminComponent, canActivate:[AdminGuard]},
+o de la ruta que queramos protejer solo para usuarios de cierto tipo
+
+
+
+
+

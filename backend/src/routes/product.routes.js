@@ -46,15 +46,22 @@ router.get("/get-all-products", async (req, res) => {
 //ingresar
 router.post("/singup", async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  let user = await User.findOne({ email });
   const userPass = await User.findOne({ password });
   if (!email || !password) return res.status(401).send("Rellene los campos");
   if (!user) return res.status(401).send("El correo no existe");
   if (!userPass) return res.status(401).send("Contraseña incorrecta");
+ let payload = {
+  _id: user._id.toString(),
+  firtsName: user.firtsName,
+  lastName: user.lastName,
+  email: user.email,
+  isAdmin: user.isAdmin
+ }
+ console.log(payload)
+  const token = jwt.sign(payload, "secretkey");
 
-  const token = jwt.sign({ _id: user._id }, "secretkey");
-
-  return res.status(200).json(token);
+  return res.status(200).json({token});
 });
 
 //exportar las rutas
@@ -70,6 +77,6 @@ function verifyToken(req, res, next) {
   }
 
   const payload = jwt.verify(token, "secretkey");
-  req.userId = payload._id;
+  req.user= payload._id;
   next();
 }

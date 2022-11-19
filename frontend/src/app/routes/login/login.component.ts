@@ -21,9 +21,11 @@ export class LoginComponent {
   login() {
     const user = { email: this.email, password: this.password };
     this.userService.login(user).subscribe(
-      (data) => {
-        this.userService.setToken(data.token);
+      ( res:any) => {
+        localStorage.setItem("token", res.token)
+        this.userService.setToken(res.token);
         this.router.navigateByUrl('/home');
+        this.userService.decodeToken()
       },
       (error) => {
         Swal.fire({

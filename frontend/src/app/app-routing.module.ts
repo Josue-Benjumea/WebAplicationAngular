@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AdminGuard } from './guards/admin.guard';
+import { UserGuard } from './guards/user.guard';
 import { AdminComponent } from './routes/admin/admin.component';
 import { HomeComponent } from './routes/home/home.component';
 import { LoginComponent } from './routes/login/login.component';
@@ -11,8 +13,8 @@ const routes: Routes = [
 
   {path: "", pathMatch: "full", redirectTo: "/login"},
 
-  {path: "home", component: HomeComponent},
-  {path: "admin", component: AdminComponent},
+  {path: "home", component: HomeComponent, canActivate:[UserGuard]},
+  {path: "admin", component: AdminComponent, canActivate:[AdminGuard]},
   {path: "login", component: LoginComponent},
   {path:"signup", component: SignupComponent},
 
